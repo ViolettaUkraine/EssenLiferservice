@@ -1,26 +1,27 @@
-
-<form action="" method= "post">
-Dein Benutzernahme: <br>
-<input type="text" name= "benutzername" placeholder="Benutzername">
-Dein Passwort: <br>
-<input type="password" name = "passwort" placeholder= "Passwort"><br>
-Wiederhole dein Passwort:
-<input type="passsword" name= "passwort_wiederholen" placeholder= "Passwort"> <br>
-<input type="submit" name="absenden" value = "Absenden"> <br>
-
+<form method="post" action="login.php">
+  Benutzername:<br>
+  <input type="text" name="benutzername" required><br>
+  Passwort:<br>
+  <input type="password" name="passwort" required><br>
+  <input type="submit" name="login" value="Login">
 </form>
 
-<?php 
-require_once 'includes/db.php';
-if (isset($_POST['absenden']));
+<?php
+session_start();
+require_once 'classes/db.php'; // Datenbankverbindung
+require_once 'classes/Kunde.php';
 
- $benutzername= $_POST['benutzername'];
- $passwort= $_POST['passswort'];
- $passwort_wiederholen= $_POST['passwort_wiederholen'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
+    $benutzername = $_POST['benutzername'];
+    $passwort = $_POST['passwort'];
 
-$search_user = $db->query("SELECT id FROM kunden WHERE benuzername = ? ");
-$search_user->bind_param('s', $benutzername);
-$search_user->execute([$benutzername]);
+    $kunde = new Kunde();
 
-endif;
+    if ($kunde->login($benutzername, $passwort)) {
+        echo "✅ Login erfolgreich! Willkommen, $benutzername";
+        // Weiterleitung möglich: header('Location: dashboard.php');
+    } else {
+        echo "❌ Benutzername oder Passwort ist falsch!";
+    }
+}
 ?>

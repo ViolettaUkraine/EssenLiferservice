@@ -12,20 +12,12 @@ class Kunde {
     private $benutzername;
     private $db;
 
-    public function __construct($kunden_id, $vorname, $nachname, $email, $passwort_hash, $adresse, $erstellt_am, $benutzername, $db) {
-        $this->kunden_id = $kunden_id;
-        $this->vorname = $vorname;
-        $this->nachname = $nachname;
-        $this->email = $email;
-        $this->passwort_hash = $passwort_hash;
-        $this->adresse = $adresse;
-        $this->erstellt_am = $erstellt_am;
-        $this->benutzername = $benutzername;
-        $this->db = (new Datenbank())->getVerbindung();
-    }
+public function __construct() {
+    $this->db = (new Datenbank())->getVerbindung();
+}
 
      public function registrieren($daten) {
-        $hash = password_hash($daten['passwort'], PASSWORD_BCRYPT9);
+        $hash = password_hash($daten['passwort'], PASSWORD_BCRYPT);
         $stmt = $this->db->prepare("INSERT INTO kunden (vorname, nachname, email, passwort_hash, adresse, benutzername) VALUES (?, ?, ?, ?, ?, ?)");
             return $stmt->execute([
             $daten['vorname'],
@@ -37,7 +29,7 @@ class Kunde {
         ]);
      }
 
-     public function login($email, $passwort) {
+     public function login($benutzername, $passwort) {
         $stmt = $this->db->prepare("SELECT * FROM kunden WHERE benutzername = ?");
         $stmt->execute([$benutzername]);
         $kunde = $stmt->fetch(PDO::FETCH_ASSOC);//Holt die Kundendaten aus der Datenbank als assoziatives Array
