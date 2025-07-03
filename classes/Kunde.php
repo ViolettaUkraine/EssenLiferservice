@@ -12,14 +12,20 @@ class Kunde {
     private $benutzername;
     private $db;
 
-public function __construct() {
-    $this->db = (new Datenbank())->getVerbindung();
-}
+ public function __construct() {
+        $this->db = (new Datenbank())->getVerbindung();
+    }
 
-     public function registrieren($daten) {
+    public function registrieren($daten) {
+        // Passwort sicher hashen
         $hash = password_hash($daten['passwort'], PASSWORD_BCRYPT);
-        $stmt = $this->db->prepare("INSERT INTO kunden (vorname, nachname, email, passwort_hash, adresse, benutzername) VALUES (?, ?, ?, ?, ?, ?)");
-            return $stmt->execute([
+
+        $stmt = $this->db->prepare("
+            INSERT INTO kunden (vorname, nachname, email, passwort_hash, adresse, benutzername)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+
+        return $stmt->execute([
             $daten['vorname'],
             $daten['nachname'],
             $daten['email'],
@@ -27,27 +33,49 @@ public function __construct() {
             $daten['adresse'],
             $daten['benutzername']
         ]);
-     }
+    }
 
-     public function login($benutzername, $passwort) {
+    public function login($benutzername, $passwort) {
         $stmt = $this->db->prepare("SELECT * FROM kunden WHERE benutzername = ?");
         $stmt->execute([$benutzername]);
-        $kunde = $stmt->fetch(PDO::FETCH_ASSOC);//Holt die Kundendaten aus der Datenbank als assoziatives Array
-        if ($kunde && password_verify($passwort, $kunde['passwort_hash'])) {
+        $kunde = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$kunde) {
+            echo "❌ Benutzer nicht gefunden<br>";
+            return false;
+        }
+
+        echo "✅ Benutzer gefunden<br>";
+
+
+        if (password_verify($passwort, $kunde['passwort_hash'])) {
+
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
             $_SESSION['kunde_id'] = $kunde['kunden_id'];
             $_SESSION['vorname'] = $kunde['vorname'];
             $_SESSION['benutzername'] = $kunde['benutzername'];
-            return true;
 
+            return true;
+        } else {
+            echo "❌ Passwort falsch<br>";
+            return false;
         }
-        return false;
     }
+
     public function istEingeloggt() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         return isset($_SESSION['kunde_id']);
     }
 
-
     public function logout() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         session_unset();
         session_destroy();
     }
