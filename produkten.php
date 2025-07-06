@@ -2,6 +2,7 @@
 require_once 'classes/db.php';
 require_once 'classes/Produkt.php';
 
+
 $produkteObjekt = new Produkte();
 $produkte = $produkteObjekt->getAlleProdukte();
 ?>
@@ -31,9 +32,20 @@ $produkte = $produkteObjekt->getAlleProdukte();
         <?php endforeach; ?>
     </div>
 
-   
     <h2>🛒 Warenkorb</h2>
     <div id="warenkorb"></div>
+
+    <h2>📦 Bestellung aufgeben</h2>
+    <form id="checkoutForm">
+        <label>Adresse: <input type="text" name="adresse" required /></label><br>
+        <label>Zahlungsart:
+            <select name="zahlungsart" required>
+                <option value="bar">Bar</option>
+                <option value="karte">Karte</option>
+            </select>
+        </label><br>
+        <button type="submit">Bestellung abschicken</button>
+    </form>
 
     <script src="scripts.js"></script>
 </body>

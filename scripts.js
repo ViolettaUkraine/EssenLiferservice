@@ -1,27 +1,27 @@
-let cart = [];
+window.cart = [];
 
-function addToCart(id, name, preis) {
-    const item = cart.find(p => p.id === id);
+window.addToCart = function(produkt_id, name, preis) {
+    const item = window.cart.find(p => p.produkt_id === produkt_id);
     if (item) {
         item.menge += 1;
     } else {
-        cart.push({ id, name, preis, menge: 1 });
+        window.cart.push({ produkt_id, name, preis, menge: 1 });
     }
     renderCart();
-}
+};
 
 function renderCart() {
     const container = document.getElementById('warenkorb');
     container.innerHTML = '';
 
-    if (cart.length === 0) {
+    if (window.cart.length === 0) {
         container.innerHTML = '<p>Dein Warenkorb ist leer.</p>';
         return;
     }
 
     let total = 0;
 
-    cart.forEach(item => {
+    window.cart.forEach(item => {
         total += item.preis * item.menge;
         const div = document.createElement('div');
         div.textContent = `${item.name} × ${item.menge} = ${(item.preis * item.menge).toFixed(2)} €`;
@@ -33,6 +33,41 @@ function renderCart() {
     container.appendChild(gesamt);
 }
 
+document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const adresse = formData.get('adresse');
+    const zahlungsart = formData.get('zahlungsart');
+
+    if (window.cart.length === 0) {
+        alert('Warenkorb ist leer!');
+        return;
+    }
+
+    fetch('bestellung.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            adresse,
+            zahlungsart,
+            cart: window.cart
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert('Bestellung erfolgreich!');
+            window.cart = [];
+            renderCart();
+            document.getElementById('checkoutForm').reset();
+        } else {
+            alert('Fehler: ' + data.message);
+        }
+    });
+});
 
   const loginBtn = document.getElementById('loginBtn');
   const registerBtn = document.getElementById('registerBtn');
@@ -48,3 +83,4 @@ function renderCart() {
     registerForm.classList.remove('hidden');
     loginForm.classList.add('hidden');
   });
+  
