@@ -2,7 +2,6 @@
 require_once 'classes/db.php';
 require_once 'classes/Produkt.php';
 
-
 $produkteObjekt = new Produkte();
 $produkte = $produkteObjekt->getAlleProdukte();
 ?>
@@ -18,18 +17,21 @@ $produkte = $produkteObjekt->getAlleProdukte();
     <h1>🍽️ Unsere Produkte</h1>
 
     <div id="produktliste">
-        <?php foreach ($produkte as $produkt): ?>
-            <div class="produkt">
-                <h3><?= htmlspecialchars($produkt['name']) ?></h3>
-                <p><?= htmlspecialchars($produkt['beschreibung']) ?></p>
-                <p><strong><?= number_format($produkt['preis'], 2, ',', '.') ?> €</strong></p>
-                <button onclick="addToCart(
-                    <?= (int)$produkt['produkt_id'] ?>,
-                    <?= json_encode($produkt['name']) ?>,
-                    <?= (float)$produkt['preis'] ?>
-                )">In den Warenkorb</button>
-            </div>
-        <?php endforeach; ?>
+       <?php foreach ($produkte as $produkt): ?>
+    <?php
+        $id = (int)$produkt['produkt_id'];
+        $name = json_encode($produkt['name']); // Erzeugt z. B. "Brot" mit doppelten Anführungszeichen
+        $preis = json_encode((float)$produkt['preis']); // z. B. 2.5
+    ?>
+    <div class="produkt">
+        <h3><?= htmlspecialchars($produkt['name']) ?></h3>
+        <p><?= htmlspecialchars($produkt['beschreibung']) ?></p>
+        <p><strong><?= number_format($produkt['preis'], 2, ',', '.') ?> €</strong></p>
+
+        <!-- 💡 Wichtig: onclick muss EINE korrekte JavaScript-Zeile ergeben -->
+        <button onclick='addToCart(<?= $id ?>, <?= $name ?>, <?= $preis ?>)'>In den Warenkorb</button>
+    </div>
+<?php endforeach; ?>
     </div>
 
     <h2>🛒 Warenkorb</h2>

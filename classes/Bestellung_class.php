@@ -1,4 +1,5 @@
 <?php
+require_once 'classes/db.php';
 class Bestellung {
     private $db;
 

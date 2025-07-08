@@ -1,46 +1,121 @@
 body {
     font-family: Arial, sans-serif;
     padding: 20px;
-    background-image: url('5.jpg');
+    margin: 0;
+    background-color: black;
     background-size: cover;
-    
-   }
-
-h1 {
-    color:white;
-    text-align: center;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: #fff;
 }
 
+/* Titel */
+h1, h2 {
+    text-align: center;
+    color: #fff;
+}
+
+/* Produktliste */
 #produktliste {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 20px;
+    margin-top: 30px;
 }
 
 .produkt {
-    background: rgba(114, 50, 14, 0.9);
-    border-radius: 10px;
+    background: rgba(114, 50, 14, 0.95);
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    color: #fff;
 }
 
 .produkt h3 {
     margin-top: 0;
 }
 
+/* Buttons allgemein */
 button {
-    background:  #e64a19;
+    background: #e64a19;
     border: none;
     color: white;
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background 0.2s ease;
 }
 
 button:hover {
-    background: #218838;
+    background: #f57c00;
 }
 
+/* Warenkorb */
 #warenkorb {
-    margin-top: 20px;
+    margin-top: 30px;
+    background: rgba(40, 40, 40, 0.85);
+    border-radius: 12px;
+    padding: 20px;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(255, 255, 0, 0.2);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Buttons im Warenkorb */
+#warenkorb button {
+    margin: 0 4px;
+    padding: 4px 8px;
+    font-size: 0.9em;
+    background-color: #f57c00;
+    border-radius: 4px;
+    color: #fff;
+}
+
+#warenkorb button:hover {
+    background-color: #faa804;
+}
+
+/* Checkout-Formular */
+form#checkoutForm {
+    margin-top: 30px;
+    background: rgba(40, 40, 40, 0.85);
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(255, 255, 0, 0.2);
+}
+
+form#checkoutForm label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: bold;
+}
+
+form#checkoutForm input,
+form#checkoutForm select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* Submit-Button */
+form#checkoutForm button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+    background-color:   #e64a19;
+}
+
+
+form#checkoutForm button[type="submit"]:hover {
+    background-color:#f57c00;
 }
