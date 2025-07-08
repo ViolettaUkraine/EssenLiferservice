@@ -1,17 +1,19 @@
 let cart = [];
 
 function addToCart(id, name, preis) {
-    const item = cart.find(p => p.id === id);
-    if (item) {
-        item.menge += 1;
-    } else {
-        cart.push({ id, name, preis, menge: 1 });
-    }
-    renderCart();
+  const item = cart.find(p => p.id === id);
+  if (item) {
+    item.menge += 1;
+  } else {
+    cart.push({ id, name, preis, menge: 1 });
+  }
+  renderCart();
 }
 
 function renderCart() {
   const container = document.getElementById('warenkorb');
+  if (!container) return;
+
   container.innerHTML = '';
 
   if (cart.length === 0) {
@@ -39,75 +41,15 @@ function renderCart() {
   container.appendChild(gesamt);
 }
 
-
-
-const loginBtn = document.getElementById('loginBtn');
-const registerBtn = document.getElementById('registerBtn');
-const loginForm = document.getElementById('loginForm');
-const registerForm = document.getElementById('registerForm');
-
-if (loginBtn && registerBtn && loginForm && registerForm) {
-  loginBtn.addEventListener('click', () => {
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
-  });
-
-  registerBtn.addEventListener('click', () => {
-    registerForm.classList.remove('hidden');
-    loginForm.classList.add('hidden');
-  });
-}
-// Formular-Handler für Bestellung
-document.getElementById('checkoutForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-
-  const adresse = this.adresse.value;
-  const zahlungsart = this.zahlungsart.value;
-
-  if (cart.length === 0) {
-    alert('Dein Warenkorb ist leer!');
-    return;
-  }
-
-  const response = await fetch('bestellung.php', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      adresse: adresse,
-      zahlungsart: zahlungsart,
-      cart: cart.map(item => ({
-        produkt_id: item.id,
-        menge: item.menge,
-        preis: item.preis
-      }))
-    })
-  });
-
-  const result = await response.json();
-  if (result.success) {
-    alert('✅ Bestellung erfolgreich!');
-    cart = [];
+function increaseQuantity(produktId) { // Erhöht die Menge eines Produkts im Warenkorb
+  const item = cart.find(p => p.id === produktId);
+  if (item) {
+    item.menge += 1;
     renderCart();
-    this.reset();
-  } else {
-    alert('❌ Fehler: ' + result.message);
-  }
-});
-// Produktmenge um 1 erhöhen
-function mengeErhöhen(produktId) {
-  const artikel = warenkorb.find(p => p.id === produktId);
-  if (artikel) {
-    artikel.menge += 1;
-    warenkorbAnzeigen();
   }
 }
 
-
-// Produktmenge um 1 verringern (löschen, wenn 0)
-
-function decreaseQuantity(produktId) {
+function decreaseQuantity(produktId) {// Verringert die Menge eines Produkts im Warenkorb
   const item = cart.find(p => p.id === produktId);
   if (item) {
     item.menge -= 1;
@@ -118,8 +60,60 @@ function decreaseQuantity(produktId) {
   }
 }
 
-// Produkt komplett aus dem Warenkorb entfernen
 function removeFromCart(produktId) {
   cart = cart.filter(p => p.id !== produktId);
   renderCart();
+}
+
+// 🧾 Checkout-Formular sicher behandeln
+const checkoutForm = document.getElementById('checkoutForm');
+
+if (checkoutForm) {
+  checkoutForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const adresse = this.adresse?.value;
+    const zahlungsart = this.zahlungsart?.value;
+
+    if (!adresse || !zahlungsart) {
+      alert('Bitte Adresse und Zahlungsart eingeben!');
+      return;
+    }
+
+    if (cart.length === 0) {
+      alert('Dein Warenkorb ist leer!');
+      return;
+    }
+
+    try {
+      const response = await fetch('bestellung.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          adresse: adresse,
+          zahlungsart: zahlungsart,
+          cart: cart.map(item => ({
+            produkt_id: item.id,
+            menge: item.menge,
+            preis: item.preis
+          }))
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        alert('✅ Bestellung erfolgreich!');
+        cart = [];
+        renderCart();
+        this.reset();
+      } else {
+        alert('❌ Fehler: ' + result.message);
+      }
+    } catch (err) {
+      console.error('Bestellfehler:', err);
+      alert('❌ Ein technischer Fehler ist aufgetreten.');
+    }
+  });
 }

@@ -1,8 +1,6 @@
 <?php 
 
-require_once 'db.php';
-
-
+require_once 'classes/db.php';
 
 class Produkte {
     private $produkt_id;
