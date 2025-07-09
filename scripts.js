@@ -15,17 +15,14 @@ function renderCart() {
   if (!container) return;
 
   container.innerHTML = '';
-
   if (cart.length === 0) {
     container.innerHTML = '<p>Dein Warenkorb ist leer.</p>';
     return;
   }
 
   let total = 0;
-
   cart.forEach(item => {
     total += item.preis * item.menge;
-
     const div = document.createElement('div');
     div.innerHTML = `
       ${item.name} × ${item.menge} = ${(item.preis * item.menge).toFixed(2)} €
@@ -41,79 +38,41 @@ function renderCart() {
   container.appendChild(gesamt);
 }
 
-function increaseQuantity(produktId) { // Erhöht die Menge eines Produkts im Warenkorb
-  const item = cart.find(p => p.id === produktId);
+function increaseQuantity(id) {
+  const item = cart.find(p => p.id === id);
   if (item) {
     item.menge += 1;
     renderCart();
   }
 }
 
-function decreaseQuantity(produktId) {// Verringert die Menge eines Produkts im Warenkorb
-  const item = cart.find(p => p.id === produktId);
+function decreaseQuantity(id) {
+  const item = cart.find(p => p.id === id);
   if (item) {
     item.menge -= 1;
     if (item.menge <= 0) {
-      cart = cart.filter(p => p.id !== produktId);
+      cart = cart.filter(p => p.id !== id);
     }
     renderCart();
   }
 }
 
-function removeFromCart(produktId) {
-  cart = cart.filter(p => p.id !== produktId);
+function removeFromCart(id) {
+  cart = cart.filter(p => p.id !== id);
   renderCart();
 }
 
-// 🧾 Checkout-Formular sicher behandeln
+// 📤 Formular vorbereiten
 const checkoutForm = document.getElementById('checkoutForm');
-
 if (checkoutForm) {
-  checkoutForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    const adresse = this.adresse?.value;
-    const zahlungsart = this.zahlungsart?.value;
-
-    if (!adresse || !zahlungsart) {
-      alert('Bitte Adresse und Zahlungsart eingeben!');
-      return;
-    }
-
+  checkoutForm.addEventListener('submit', function (e) {
     if (cart.length === 0) {
-      alert('Dein Warenkorb ist leer!');
+      e.preventDefault();
+      alert('🛒 Der Warenkorb ist leer!');
       return;
     }
 
-    try {
-      const response = await fetch('bestellung.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          adresse: adresse,
-          zahlungsart: zahlungsart,
-          cart: cart.map(item => ({
-            produkt_id: item.id,
-            menge: item.menge,
-            preis: item.preis
-          }))
-        })
-      });
-
-      const result = await response.json();
-      if (result.success) {
-        alert('✅ Bestellung erfolgreich!');
-        cart = [];
-        renderCart();
-        this.reset();
-      } else {
-        alert('❌ Fehler: ' + result.message);
-      }
-    } catch (err) {
-      console.error('Bestellfehler:', err);
-      alert('❌ Ein technischer Fehler ist aufgetreten.');
-    }
+    const cartInput = document.getElementById('cartInput');
+    cartInput.value = JSON.stringify(cart); // Verstecktes Feld füllen
   });
 }

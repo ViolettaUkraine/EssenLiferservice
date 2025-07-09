@@ -34,20 +34,26 @@ $produkte = $produkteObjekt->getAlleProdukte();
 <?php endforeach; ?>
     </div>
 
-    <h2>🛒 Warenkorb</h2>
-    <div id="warenkorb"></div>
+<h2>🛒 Warenkorb</h2>
+<div id="warenkorb"></div>
 
-    <h2>📦 Bestellung aufgeben</h2>
-    <form id="checkoutForm">
-        <label>Adresse: <input type="text" name="adresse" required /></label><br>
-        <label>Zahlungsart:
-            <select name="zahlungsart" required>
-                <option value="bar">Bar</option>
-                <option value="karte">Karte</option>
-            </select>
-        </label><br>
-        <button type="submit">Bestellung abschicken</button>
-    </form>
+<h2>📦 Bestellung aufgeben</h2>
+<form id="checkoutForm" method="POST" action="bestellung.php">
+    <label>Adresse: <input type="text" name="adresse" required /></label><br>
+    <label>Zahlungsart:
+        <select name="zahlungsart" required>
+            <option value="bar">Bar</option>
+            <option value="karte">Karte</option>
+            <option value="paypal">PayPal</option>
+            <option value="überweisung">Überweisung</option>
+        </select>
+    </label><br>
+
+    <!-- Hier kommt das versteckte Warenkorb-Feld rein -->
+    <input type="hidden" name="cart" id="cartInput" />
+
+    <button type="submit">Bestellung abschicken</button>
+</form>
 
     <script src="scripts.js"></script>
 </body>

@@ -54,7 +54,7 @@ class Kunde {
                 session_start();
             }
 
-            $_SESSION['kunde_id'] = $kunde['kunden_id'];
+            $_SESSION['kunden_id'] = $kunde['kunden_id'];
             $_SESSION['vorname'] = $kunde['vorname'];
             $_SESSION['benutzername'] = $kunde['benutzername'];
 
@@ -69,7 +69,7 @@ class Kunde {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        return isset($_SESSION['kunde_id']);
+        return isset($_SESSION['kunden_id']);
     }
 
     public function logout() {

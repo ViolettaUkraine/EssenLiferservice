@@ -1,21 +1,37 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 session_start();
-
 require_once 'classes/db.php';
-require_once 'classes/Kunde.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
-    $benutzername = $_POST['benutzername'];
-    $passwort = $_POST['passwort'];
+// Formulardaten
+$benutzername = $_POST['benutzername'] ?? '';
+$passwort = $_POST['passwort'] ?? '';
 
-    $kundeObjekt = new Kunde();
-    if ($kundeObjekt->login($benutzername, $passwort)) {
-        header('Location: produkten.php'); // Weiterleitung
-        exit;
-    } else {
-        echo "❌ Benutzername oder Passwort falsch";
-    }
+$db = (new Datenbank())->getVerbindung();
+
+// 1. Prüfen: Ist es ein Mitarbeiter?
+$stmt = $db->prepare("SELECT * FROM mitarbeiter WHERE email = ? or benutzername = ?");
+$stmt->execute([$benutzername, $benutzername]);
+$mitarbeiter = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($mitarbeiter && password_verify($passwort, $mitarbeiter['passwort_hash'])) {
+    $_SESSION['mitarbeiter_id'] = $mitarbeiter['mitarbeiter_id'];
+    $_SESSION['mitarbeiter_name'] = $mitarbeiter['name'];
+    header("Location: mitarbeiter_bestellung.php");
+    exit;
 }
+
+// 2. Prüfen: Ist es ein Kunde?
+$stmt = $db->prepare("SELECT * FROM kunden WHERE benutzername = ?");
+$stmt->execute([$benutzername]);
+$kunde = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($kunde && password_verify($passwort, $kunde['passwort_hash'])) {
+    $_SESSION['kunden_id'] = $kunde['kunde_id'];
+    $_SESSION['kundenname'] = $kunde['benutzername'];
+    header("Location: produkten.php");
+    exit;
+}
+
+// Wenn beides fehlschlägt:
+echo "❌ Benutzername oder Passwort falsch.";
 ?>
