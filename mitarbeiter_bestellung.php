@@ -90,6 +90,7 @@ $bestellungen = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </tr>
     <?php endforeach; ?>
 </table>
+<button a href="main.php" class="button"> Logout</a></button>
 
 </body>
 </html>

@@ -11,10 +11,11 @@ $produkte = $produkteObjekt->getAlleProdukte();
 <head>
     <meta charset="UTF-8" />
     <title>Unsere Produkte</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style_produkten.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredericka+the+Great&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>🍽️ Unsere Produkte</h1>
+    <h1>🍽️ Unsere Produkte</h1><button a href="main.php" class="button"> Logout</a></button>
 
     <div id="produktliste">
        <?php foreach ($produkte as $produkt): ?>
@@ -28,12 +29,11 @@ $produkte = $produkteObjekt->getAlleProdukte();
         <p><?= htmlspecialchars($produkt['beschreibung']) ?></p>
         <p><strong><?= number_format($produkt['preis'], 2, ',', '.') ?> €</strong></p>
 
-        <!-- 💡 Wichtig: onclick muss EINE korrekte JavaScript-Zeile ergeben -->
+        <!--  onclick ist korrekte JavaScript-Zeile  -->
         <button onclick='addToCart(<?= $id ?>, <?= $name ?>, <?= $preis ?>)'>In den Warenkorb</button>
     </div>
 <?php endforeach; ?>
     </div>
-
 <h2>🛒 Warenkorb</h2>
 <div id="warenkorb"></div>
 
@@ -53,6 +53,7 @@ $produkte = $produkteObjekt->getAlleProdukte();
     <input type="hidden" name="cart" id="cartInput" />
 
     <button type="submit">Bestellung abschicken</button>
+
 </form>
 
     <script src="scripts.js"></script>

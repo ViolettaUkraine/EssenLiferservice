@@ -78,6 +78,8 @@ class Kunde {
         }
         session_unset();
         session_destroy();
+        header('Location: main.php');
+        exit;
     }
 
     public function getKundendaten($kunden_id) {

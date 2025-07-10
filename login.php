@@ -26,7 +26,7 @@ $stmt->execute([$benutzername]);
 $kunde = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($kunde && password_verify($passwort, $kunde['passwort_hash'])) {
-    $_SESSION['kunden_id'] = $kunde['kunde_id'];
+    $_SESSION['kunden_id'] = $kunde['kunden_id'];
     $_SESSION['kundenname'] = $kunde['benutzername'];
     header("Location: produkten.php");
     exit;

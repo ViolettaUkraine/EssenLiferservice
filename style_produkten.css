@@ -1,5 +1,7 @@
 body {
-    font-family: Arial, sans-serif;
+font-family: "Libre Baskerville", serif;
+  font-weight: 400;
+  font-style: normal;
     padding: 20px;
     margin: 0;
     background-color: black;
@@ -8,7 +10,10 @@ body {
     background-repeat: no-repeat;
     color: #fff;
 }
-
+h1, h2, p, ul, li, a, a.btn, .btn, button, .produkt, .total, .danke-container {
+    font-family: "Libre Baskerville", serif;
+    font-size: larger;
+}
 /* Titel */
 h1, h2 {
     text-align: center;
@@ -37,6 +42,9 @@ h1, h2 {
 
 /* Buttons allgemein */
 button {
+    font-family: "Fredericka the Great", serif;
+    font-weight: 400;
+    font-style: normal;
     background: #e64a19;
     border: none;
     color: white;

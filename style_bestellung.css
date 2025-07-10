@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Libre Baskerville", serif;
     padding: 20px;
     margin: 0;
     background-color: black;
@@ -8,12 +8,16 @@ body {
     background-repeat: no-repeat;
     color: #fff;
 }
-
+h1, h2, p, ul, ul li, a.btn, .produkt, .total, .danke-container {
+    font-family: "Libre Baskerville", serif;
+}
 /* Titel */
 h1, h2 {
     text-align: center;
     color: #fff;
     margin-bottom: 20px;
+    font-size: xx-large;
+
 }
 
 /* Bestell-Zusammenfassung */
